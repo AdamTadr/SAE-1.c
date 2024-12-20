@@ -25,9 +25,7 @@ void remplir_paquet(jeu* j, pioche* p) {
 
 		int d = rand() % p->nb;
 		j->jeu_actuel[j->nb[0]++] = distribuer_chevalet(p, d);
-		affichage_pioche(p);
 	}
-	affichage_jeu(j);
 
 }
 
@@ -57,9 +55,10 @@ void trie_alphabetique(jeu* j) {
 	}
 }
 
-void affichage_jeu(jeu* j) {
+void affichage_jeu(jeu* j, int jnb) {
 	trie_alphabetique(j);
 	assert(paquet_vide != 1);
+	printf("%d : ", jnb);
 	for (int i = 0; i < j->nb[0]; i++)
 		printf("%c ", j->jeu_actuel[i]);
 	printf("\n");
@@ -74,27 +73,29 @@ int deja_comptabiliser(int indice, const black_list* bl) {
 
 }
 
-int jouable(jeu* j, char* mot) {
-
+int jouable(jeu* j, char* che) {
+	printf("Le mot dans la fct %s", che);
 	black_list bl;
 	init_bl(&bl);
 
-	int taille_mot = strlen(mot);
+	int taille_mot = strlen(che);
 	;
 	for (int i = 0; i < taille_mot; i++) {
 		for (int d = 0; d < taille_jeu_actuel(j); d++) {
 			if (deja_comptabiliser(d, &bl))
 				continue;
-			if (mot[i] == j->jeu_actuel[d]) {
+			if (che[i] == j->jeu_actuel[d]) {
 				bl.list[bl.nb++] = d;
 				break;
 			}
 		}
 		if (bl.nb != i + 1) {
-			printf("la valeur de i : %d", i);
+			printf("\n");
 			return PAS_JOUABLE;
 		}
 	}
+	printf("\n");
+	return JOUABLE;
 
 }
 

@@ -88,7 +88,6 @@ void indexage_dico(dictionnaire* dico) {
 
 	for (int i = 0, j = 0, d = 'A'; i < taille_dico(dico); i++) {
 		if (dico->dico[i][PREMIERE_LETTRE] == d) {
-			printf("J'ai trouve a l'indice %d pour '%c' le mot etant %s\n", i, dico->dico[i][PREMIERE_LETTRE], dico->dico[i]);
 			dico->index[j].ind_premiere = i;
 			indexage_secondaire(dico, d, i);
 			j++;
@@ -115,7 +114,6 @@ void indexage_secondaire(dictionnaire* dico, char ref, int depart) {
 	for (int i = depart, j = 0, d = 'A'; i < taille_dico(dico) && dico->dico[i][PREMIERE_LETTRE] == ref; i++) {
 
 		if (dico->dico[i][DEUXIEME_LETTRE] == d) {
-			printf("%d pour '%c' le mot etant %s\n", i, dico->dico[i][DEUXIEME_LETTRE], dico->dico[i]);
 			dico->index[ind_lettre_tab].ind_deuxieme[j] = i;
 			j++;
 			d++;
@@ -151,9 +149,10 @@ int trouver_mot(const dictionnaire* dico, const char* mot) {
 		return PAS_TROUVER;
 	}
 
-	for (int i = depart; dico->dico[i][DEUXIEME_LETTRE]<mot_limite; i++) {
-		if (strcmp(dico->dico[i], mot) == 0)
+	for (int i = depart; dico->dico[i][DEUXIEME_LETTRE]<mot_limite && i < dico->taille; i++) {
+		if (strcmp(dico->dico[i], mot) == 0) {
 			return i;
+		}
 	}
 	return PAS_TROUVER;
 }
@@ -167,4 +166,8 @@ int bonne_casse(const char* mot) {
 			return PAS_TROUVER;
 	}
 	return 1;
+}
+
+void rendre_mot_injouable(dictionnaire* dico, int indice) {
+	strcpy(dico->dico[indice], "\0");
 }

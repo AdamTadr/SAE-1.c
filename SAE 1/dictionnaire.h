@@ -38,3 +38,5 @@ void affichage_index(const dictionnaire* dico);
 int trouver_mot(const dictionnaire* dico, const char* mot);
 
 int bonne_casse(const char* mot);
+
+void rendre_mot_injouable(dictionnaire* dico, int indice);

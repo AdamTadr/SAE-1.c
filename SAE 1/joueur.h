@@ -1,7 +1,8 @@
 #pragma once
 #include "pioche.h"
 
-enum { MAX_CHEVALETS = 16, CHEVALETS_INIT = 12, NB_TABLEAU = 2, PAS_JOUABLE = -1, JOUABLE = 1, TAILLE_MOT_MAX = 8 };
+enum { MAX_CHEVALETS = 16, CHEVALETS_INIT = 12, NB_TABLEAU = 2, PAS_JOUABLE = -1, JOUABLE = 1, TAILLE_MOT_MAX = 11, TAILLE_MOT_SANS_P = 9
+};
 
 
 typedef struct {
@@ -28,7 +29,7 @@ void remplir_paquet(jeu* j, pioche* p); //autant que ça capacité
 
 void trie_alphabetique(jeu* j);
 
-void affichage_jeu(jeu* j);
+void affichage_jeu(jeu* j, int jnb);
 
 char distribuer_chevalet(pioche* p, int i);
 
