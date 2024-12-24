@@ -9,6 +9,7 @@ main() {
 	rail r;
 	dictionnaire dico;
 
+	init_rail(&r);
 	init_pioche(&p);
 	remplissage_pioche(&p);
 
@@ -29,7 +30,6 @@ main() {
 	printf("La valeur %d\n", valeur);
 
 	jouer_partie(&dico, &p, &j1, &j2, &r, valeur);
-	printf("Le rail qui bug ? : %s, ça taille avec en octet %d", r, sizeof(r));
 
 
 

@@ -39,7 +39,6 @@ void save_jeu(jeu* j) {
 
 void recevoir_chevalet(jeu* j, char che) {
 	assert(j->nb[0] < MAX_CHEVALETS);
-	save_jeu(j);
 	j->jeu_actuel[j->nb[0]++] = che;
 }
 
@@ -60,7 +59,16 @@ void affichage_jeu(jeu* j, int jnb) {
 	assert(paquet_vide != 1);
 	printf("%d : ", jnb);
 	for (int i = 0; i < j->nb[0]; i++)
-		printf("%c ", j->jeu_actuel[i]);
+		printf("%c", j->jeu_actuel[i]);
+	printf("\n");
+}
+
+void affichage_jeu_precedent(jeu* j, int jnb) {
+	trie_alphabetique(j);
+	assert(paquet_vide != 1);
+	printf("%d : ", jnb);
+	for (int i = 0; i < j->nb[1]; i++)
+		printf("%c", j->jeu_precedent[i]);
 	printf("\n");
 }
 
@@ -74,12 +82,12 @@ int deja_comptabiliser(int indice, const black_list* bl) {
 }
 
 int jouable(jeu* j, char* che) {
-	printf("Le mot dans la fct %s", che);
+	printf("Le mot dans la fct jouable %s", che);
 	black_list bl;
 	init_bl(&bl);
 
 	int taille_mot = strlen(che);
-	;
+
 	for (int i = 0; i < taille_mot; i++) {
 		for (int d = 0; d < taille_jeu_actuel(j); d++) {
 			if (deja_comptabiliser(d, &bl))
@@ -99,6 +107,34 @@ int jouable(jeu* j, char* che) {
 
 }
 
+int precedent_jouable(jeu* j_autre, char* che) {
+	printf("Le mot dans la fct %s", che);
+	black_list bl;
+	init_bl(&bl);
+
+	int taille_mot = strlen(che);
+	;
+	for (int i = 0; i < taille_mot; i++) {
+		for (int d = 0; d < taille_jeu_actuel(j_autre); d++) {
+			if (deja_comptabiliser(d, &bl))
+				continue;
+			if (che[i] == j_autre->jeu_precedent[d]) {
+				bl.list[bl.nb++] = d;
+				break;
+			}
+		}
+		if (bl.nb != i + 1) {
+			printf("\n");
+			return PAS_JOUABLE;
+		}
+	}
+	printf("\n");
+	return JOUABLE;
+
+}
+
+
+
 int indice_chevalet_paquet(jeu* j, char che) {
 	int indice = PAS_JOUABLE;
 	for (int i = 0; i < taille_jeu_actuel(j); i++) {
@@ -111,10 +147,13 @@ int indice_chevalet_paquet(jeu* j, char che) {
 int taille_jeu_actuel(const jeu* j) {
 	return j->nb[0];
 }
+int taille_jeu_precent(const jeu* j) {
+	return j->nb[1];
+}
 
 
 char jouer_chevalet(jeu* j, char che) {
-	save_jeu(j);
+
 	int indice = indice_chevalet_paquet(j, che);
 
 	char temp = j->jeu_actuel[indice];

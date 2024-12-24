@@ -82,26 +82,26 @@ void affiche_rail(const rail* r) {
 
 }
 
-void copie_recto_verso(rail* r) {
-    for (int i = 0; r->recto[i] != '\0'; i++)
+void copie_recto_verso(rail* r) { // Les copies verso et averso et blabla sont bonnes, peut pas faire mieux je pense...
+    for (int i = 0; i < TAILLE_RAIL - 1; i++)
         r->verso[i] = r->recto[TAILLE_RAIL - 2 - i];
     r->verso[TAILLE_RAIL - 1] = '\0';
 }
 
 void copie_verso_recto(rail* r) {
-    for (int i = 0; r->verso[i] != '\0'; i++)
+    for (int i = 0; i < TAILLE_RAIL - 1; i++)
         r->recto[i] = r->verso[TAILLE_RAIL - 2 - i];
     r->recto[TAILLE_RAIL - 1] = '\0';
 }
 
 void copie_arecto_averso(rail* r) {
-    for (int i = 0; r->ancien_recto[i] != '\0'; i++)
+    for (int i = 0; i < TAILLE_RAIL - 1; i++)
         r->ancien_verso[i] = r->ancien_recto[TAILLE_RAIL - 2 - i];
     r->ancien_verso[TAILLE_RAIL - 1] = '\0';
 }
 
 void copie_averso_arecto(rail* r) {
-    for (int i = 0; r->ancien_verso[i] != '\0'; i++)
+    for (int i = 0; i < TAILLE_RAIL - 1; i++)
         r->ancien_recto[i] = r->verso[TAILLE_RAIL - 2 - i];
     r->ancien_recto[TAILLE_RAIL - 1] = '\0';
 }
@@ -119,4 +119,8 @@ void save_rail(rail* r, char cote) {
         }
         copie_averso_arecto(r);
     }
+}
+
+void init_rail(rail* r) {
+	r->t_drn_mot_joue = 0;
 }

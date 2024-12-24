@@ -1,7 +1,7 @@
 #pragma once
 #include "pioche.h"
 
-enum { MAX_CHEVALETS = 16, CHEVALETS_INIT = 12, NB_TABLEAU = 2, PAS_JOUABLE = -1, JOUABLE = 1, TAILLE_MOT_MAX = 11, TAILLE_MOT_SANS_P = 9
+enum { MAX_CHEVALETS = 16, CHEVALETS_INIT = 12, NB_TABLEAU = 2, PAS_JOUABLE = -1, JOUABLE = 1, JOUE = 1, TAILLE_MOT_MAX = 11,TAILLE_MOT_MIN = 5, TAILLE_MOT_SANS_P = 9
 };
 
 
@@ -31,6 +31,8 @@ void trie_alphabetique(jeu* j);
 
 void affichage_jeu(jeu* j, int jnb);
 
+void affichage_jeu_precedent(jeu* j, int jnb);
+
 char distribuer_chevalet(pioche* p, int i);
 
 void recevoir_chevalet(jeu* j, char che);
@@ -40,6 +42,9 @@ char jouer_chevalet(jeu* j, char che);
 void save_jeu(jeu* j);
 
 int jouable(jeu* j, char* che);
+
+int precedent_jouable(jeu* j_autre, char* che);
+
 
 // Rajouter une fct ajouter carte prenant en paramètre le char retourner par le distrib_chevalet correspondant, elle est void,
 // à chaque fois que le joueur perd face à son adv, fait une alloc dynamique si le nb > 0 avec facteur 8 (ou autre)...
