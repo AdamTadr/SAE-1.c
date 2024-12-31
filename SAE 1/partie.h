@@ -3,7 +3,7 @@
 
 typedef enum{TOUR_J1 = 1, TOUR_J1_OCTO = -1, TOUR_J2 = 2, TOUR_J2_OCTO = -2, FINI = 0} statut_partie;
 
-enum{ L_MAX_PARENTH= 7, L_MAX_H_PARENTH = 8, RIEN_ENTRE = 1, TAILLE_LETTRE = 1};
+enum{ L_MAX_PARENTH= 7, L_MAX_H_PARENTH = 8, PAS_ASSEZ_ENTRE= 1, TAILLE_LETTRE = 1};
 
 
 

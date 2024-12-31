@@ -78,17 +78,6 @@ statut_partie demander_mot(dictionnaire* dico,pioche* p, jeu* j, jeu* j_autre, c
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 void jouer_mot(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, char* lettre_parenthese,char* lettre_hors_p, char cote, statut_partie joueur_actuel) {
     int taille_mot = strlen(mot);
     int taille_mot_parenth = strlen(lettre_parenthese);
@@ -240,7 +229,7 @@ int verif_format_mot(char* mot, int* indice_ouv, int* indice_ferm ) {
         return PAS_JOUABLE;
     printf("1\n");
 
-    if (indice_ferm - indice_ouv - 1 > L_MAX_PARENTH || indice_ferm - indice_ouv == RIEN_ENTRE)
+    if (*indice_ferm - *indice_ouv - 1 > L_MAX_PARENTH || *indice_ferm - *indice_ouv - 1 == PAS_ASSEZ_ENTRE)
         return PAS_JOUABLE;
     printf("2\n");
     return JOUABLE;
@@ -259,17 +248,20 @@ int tentative(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, char
 	// Initialisation mot sans parenthese... avec sous fct, verif mot sans parenthese.
 
     if (cote == 'r' || cote == 'v') {
-        if (r->t_drn_mot_joue == TAILLE_RAIL - 1 || r->t_drn_mot_joue == PAS_ENCORE_JOUE)
+		if (r->t_drn_mot_joue == TAILLE_RAIL - 1 || r->t_drn_mot_joue < TAILLE_MOT_MIN_SANS_P) {
 			return PAS_JOUABLE;
+		}
+        else {
+            octo_chevalet(j, j_autre, joueur_actuel);
+            r->t_drn_mot_joue = PAS_JOUABLE;
+        }
     }
 
 	if (init_mot(mot, &mot_sans_parenthese, &lettres_hors_parenthese, &lettre_parenthese, cote, j,r) == PAS_JOUABLE) {
 		return PAS_JOUABLE;
 	}
 
-    int indice_mot = 1;  // IL FAUDRA UTILSIER trouver_mot(dico, &mot_sans_parenthese);
-    if (indice_mot == PAS_TROUVER)
-        return PAS_JOUABLE;
+    printf("je passe par ici (avt trouver mot...)\n les trucs trouvé sans par : %s, par : %s, hors par : %s\n", mot_sans_parenthese, lettre_parenthese, lettres_hors_parenthese);
     
     if (cote == 'R' || cote == 'V') {
         jouer_mot(j, j_autre, r, dico, mot, &lettre_parenthese, &lettres_hors_parenthese, cote, joueur_actuel);
@@ -280,14 +272,12 @@ int tentative(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, char
             octo_chevalet(j, j_autre, joueur_actuel);
         }
     }
-    if(cote=='r'|| cote=='v')
-		octo_chevalet(j, j_autre, joueur_actuel);
+
     if (j->nb[0] == 0) {
         return FINI;
     }
 
-    // Il faut rajouter après : rendre_mot_injouable(dico, indice_mot);
-
+    //rendre_mot_injouable(dico, indice_mot); 
     return JOUE;
 
 }
@@ -436,8 +426,9 @@ int verif_Recto_debut(char* mot, char* rail_recto, char* lettres_parenthese, int
     int d = 0;
     for (int i = indice_ouv+1; i < indice_ferm && d < L_MAX_H_PARENTH - 1; i++) {
         printf("VRD Les lettres du mot : %c, ceux du rail %c\n", mot[i], rail_recto[d]);
-        if (mot[i] == rail_recto[d])
+        if (mot[i] == rail_recto[d]){
             lettres_parenthese[d++] = mot[i];
+        }
         else
             return PAS_JOUABLE;
     }
@@ -455,7 +446,7 @@ int verif_Recto_fin(char* mot, char* rail_recto, char* lettres_parenthese, int i
     for (int i = TAILLE_RAIL - 2; d > indice_ouv ; i--, d--, j++) {
         printf("Les lettres du mot : %c, ceux du rail %c\n", mot[d], rail_recto[i]);
         if (mot[d] == rail_recto[i]) {
-            lettres_parenthese[j] = mot[j];
+            lettres_parenthese[j] = mot[j+1];
         }
         else
             return PAS_JOUABLE;
@@ -491,7 +482,7 @@ int verif_Verso_fin(char* mot, char* rail_verso, char* lettres_parenthese, int i
     for (int i = TAILLE_RAIL - 2; d > indice_ouv; i--, d--, j++) {
         printf("Les lettres du mot : %c, ceux du rail %c\n", mot[d], rail_verso[i]);
         if (mot[d] == rail_verso[i]) {
-            lettres_parenthese[j] = mot[j];
+            lettres_parenthese[j] = mot[j+1];
         }
         else
             return PAS_JOUABLE;

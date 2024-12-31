@@ -22,6 +22,7 @@ main() {
 	creation_dico(&dico, taille, "ods4.txt");
 	indexage_dico(&dico);
 	printf("\nL'indice du mot est : %d, %s\n", trouver_mot(&dico, "PIGEON"), dico.dico[trouver_mot(&dico, "PIGEON")]);
+	printf("\nL'indice du mot est : %d, %s\n", trouver_mot(&dico, "CHIEN"), dico.dico[trouver_mot(&dico, "CHIEN")]);
 	printf("\n\n");
 
 	affichage_jeu(&j1, 1);
