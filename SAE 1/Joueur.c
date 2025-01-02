@@ -82,7 +82,6 @@ int deja_comptabiliser(int indice, const black_list* bl) {
 }
 
 int jouable(jeu* j, char* che) {
-	printf("Le mot dans la fct jouable %s", che);
 	black_list bl;
 	init_bl(&bl);
 
@@ -98,17 +97,14 @@ int jouable(jeu* j, char* che) {
 			}
 		}
 		if (bl.nb != i + 1) {
-			printf("\n");
 			return PAS_JOUABLE;
 		}
 	}
-	printf("\n");
 	return JOUABLE;
 
 }
 
 int precedent_jouable(jeu* j_autre, char* che) {
-	printf("Le mot dans la fct %s", che);
 	black_list bl;
 	init_bl(&bl);
 
@@ -124,11 +120,9 @@ int precedent_jouable(jeu* j_autre, char* che) {
 			}
 		}
 		if (bl.nb != i + 1) {
-			printf("\n");
 			return PAS_JOUABLE;
 		}
 	}
-	printf("\n");
 	return JOUABLE;
 
 }

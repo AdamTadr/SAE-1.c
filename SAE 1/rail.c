@@ -3,11 +3,12 @@
 
 int depart_valide(dictionnaire* dico, const char* mot, jeu* j) {
 
-    if (strlen(mot) != 4)
+    if (strlen(mot) != TAILLE_MOT_MIN-1)
         return PAS_JOUABLE;
-    /*if (trouver_mot(dico, mot) == PAS_TROUVER)
-        return PAS_JOUABLE;*/
+	int indice_mot = trouver_mot(dico, mot);
+    if (indice_mot == PAS_TROUVER) return PAS_JOUABLE;
     int validite = jouable(j, mot);
+	rendre_mot_injouable(dico, indice_mot);
     return validite;
 
 }
@@ -18,7 +19,8 @@ void demander_mot_depart(dictionnaire* dico, jeu* j, char* mot, int nbj) {
     int valide = PAS_JOUABLE;
     while (valide == PAS_JOUABLE) {
         printf("%d> ", nbj);
-        scanf("%s", mot_test);
+		fgets(mot_test, MOT_TEST_MAX, stdin);
+		sscanf(mot_test, "%s", mot_test);
         valide = depart_valide(dico, mot_test, j);
         if (valide == PAS_JOUABLE) {
             continue;
@@ -41,7 +43,8 @@ int placement_de_depart(jeu* j1, jeu* j2, const char* mot1, const char* mot2, ra
         }
         r->recto[TAILLE_RAIL - 1] = '\0';
         copie_recto_verso(r);
-        return 1;
+        save_rail(r, 'R');
+        return JOUEUR_1;
     }
     else {
         for (int i = 0; i < MOT_DEPART - 1; i++) {
@@ -53,7 +56,8 @@ int placement_de_depart(jeu* j1, jeu* j2, const char* mot1, const char* mot2, ra
         }
         r->recto[TAILLE_RAIL - 1] = '\0';
         copie_recto_verso(r);
-        return 2;
+        save_rail(r, 'R');
+        return JOUEUR_2;
     }
 }
 
@@ -78,11 +82,11 @@ void affiche_rail(const rail* r) {
     for (int i = 0; i < TAILLE_RAIL - 1; i++) {
         printf("%c", r->verso[i]);
     }
-    printf("\n");
+    printf("\n\n");
 
 }
 
-void copie_recto_verso(rail* r) { // Les copies verso et averso et blabla sont bonnes, peut pas faire mieux je pense...
+void copie_recto_verso(rail* r) {
     for (int i = 0; i < TAILLE_RAIL - 1; i++)
         r->verso[i] = r->recto[TAILLE_RAIL - 2 - i];
     r->verso[TAILLE_RAIL - 1] = '\0';
@@ -111,12 +115,14 @@ void save_rail(rail* r, char cote) {
         for (int i = 0; i < TAILLE_RAIL - 1; i++) {
             r->ancien_recto[i] = r->recto[i];
         }
+        r->ancien_recto[TAILLE_RAIL - 1] = '\0';
         copie_arecto_averso(r);
     }
     if (cote == 'V') {
         for (int i = 0; i < TAILLE_RAIL - 1; i++) {
             r->ancien_recto[i] = r->recto[i];
         }
+        r->ancien_recto[TAILLE_RAIL - 1] = '\0';
         copie_averso_arecto(r);
     }
 }

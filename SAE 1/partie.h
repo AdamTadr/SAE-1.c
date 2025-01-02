@@ -7,7 +7,7 @@ enum{ L_MAX_PARENTH= 7, L_MAX_H_PARENTH = 8, PAS_ASSEZ_ENTRE= 1, TAILLE_LETTRE =
 
 
 
-#include "partie.h"
+
 
 
 int jouer_partie(dictionnaire* dico, pioche* p, jeu* j1, jeu* j2, rail* r, statut_partie joueur_actuel);
@@ -87,6 +87,8 @@ int verif_Verso_fin(char* mot, char* rail_recto, char* lettres_parenthese, int i
 int lettre_rail_valide(rail* r, char* mot, char* lettres_hors_parenthese, char* lettres_parenthese, char cote, jeu* j, int indice_ouv, int indice_ferm);
 
 
-void octo_chevalet(jeu* j, jeu* j_autre, statut_partie joueur_actuel);
+int octo_chevalet(jeu* j, jeu* j_autre,rail *r, statut_partie joueur_actuel);
 
-void echanger_chevalet(pioche* p, jeu* j, char che);
+int echanger_chevalet(pioche* p, jeu* j, char che);
+
+void affichage_tour(jeu* j1, jeu* j2, rail* r);

@@ -4,7 +4,7 @@
 
 typedef enum { FAUX, VRAI }bool;
 
-enum { TAILLE_RAIL = 9, MOT_DEPART = 5, MOT_TEST_MAX =50, PAS_ENCORE_JOUE = 0 };
+enum { TAILLE_RAIL = 9, MOT_DEPART = 5, MOT_TEST_MAX =50, PAS_ENCORE_JOUE = 0, JOUEUR_1 = 1, JOUEUR_2 = 2};
 
 typedef struct {
     char recto[TAILLE_RAIL];
