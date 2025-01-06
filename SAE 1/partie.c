@@ -34,9 +34,12 @@ statut_partie demander_mot(dictionnaire* dico,pioche* p, jeu* j, jeu* j_autre, c
         printf("%d> ", nbj);
 
 		fgets(test, MOT_TEST_MAX, stdin); // faire une fct rentrer mot jeu et pour l'init rentrer mot init.
+        if (test[1] != ' ' || test[0]==' ') {
+            printf("MARCHE PAS %c\n", test[1]);
+            continue;
+        }
 		sscanf(test,"%c %s", &interprete, test);
 		printf("le Char : (%c) le Mot : (%s)\n", interprete, test);
-
         if (strlen(test) > TAILLE_MOT_MAX - 1 || strlen(test)<TAILLE_LETTRE) 
             continue;
 
