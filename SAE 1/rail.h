@@ -4,7 +4,7 @@
 
 typedef enum { FAUX, VRAI }bool;
 
-enum { TAILLE_RAIL = 9, MOT_DEPART = 5, MOT_TEST_MAX =50, PAS_ENCORE_JOUE = 0, JOUEUR_1 = 1, JOUEUR_2 = 2};
+enum { TAILLE_RAIL = 9, MOT_DEPART = 5, MOT_TEST_MAX =50, PAS_ENCORE_JOUE = 0, JOUEUR_1 = 1, JOUEUR_2 = 2 };
 
 typedef struct {
     char recto[TAILLE_RAIL];
@@ -24,4 +24,20 @@ void copie_recto_verso(rail* r);
 void copie_verso_recto(rail* r);
 void copie_averso_arecto(rail* r);
 void copie_arecto_averso(rail* r);
-void save_rail(rail* r, char cote);
+void save_rail(rail* r);
+void ajouter_rail_recto(rail* r, int indice, char che);
+void ajouter_rail_verso(rail* r, int indice, char che);
+void ajouter_rail_arecto(rail* r, int indice, char che);
+void ajouter_rail_averso(rail* r, int indice, char che);
+
+char valeur_rail_recto(const rail* r, int indice);
+
+char valeur_rail_verso(const rail* r, int indice);
+
+char valeur_rail_arecto(const rail* r, int indice);
+
+char valeur_rail_averso(const rail* r, int indice);
+
+int valeur_t_drn_mot_joue(const rail* r);
+
+void modif_t_drn_mot_joue(rail* r, int n);

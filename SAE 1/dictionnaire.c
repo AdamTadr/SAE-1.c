@@ -2,12 +2,12 @@
 #pragma warning (disable : 4996)
 
 
-int taille_dico(dictionnaire* dico) {
+int taille_dico(const dictionnaire* dico) {
 	return dico->taille;
 }
 
 
-size_t recherche_taille_dico(char* nom_dico) {
+size_t recherche_taille_dico(const char* nom_dico) {
 	FILE* f = fopen(nom_dico, "r");
 	if (f == NULL) {
 		printf("fichier non accessible\n");
@@ -30,26 +30,36 @@ size_t recherche_taille_dico(char* nom_dico) {
 
 
 void init_dico(dictionnaire* dico) {
-	dico->taille = 0;
+	mod_taille_dico(dico, VIDE);
 }
 
+int dico_vide(dictionnaire* dico) {
+	return taille_dico(dico) == VIDE;
+}
 
+void changer_taille_dico(dictionnaire* dico, int valeur) {
+	dico->taille = valeur;
+}
 
-void creation_dico(dictionnaire* dico, size_t taille, char* nom_dico) {
-
-	FILE* f = fopen(nom_dico, "r");
-	if (f == NULL) {
-		printf("fichier non accessible\n");
-		return;
-	}
-
-	dico->taille = (int)taille;
+void dico_alloc(dictionnaire* dico, size_t taille) {
 	dico->dico = (char**)malloc(sizeof(char*) * taille);
 	if (dico->dico == NULL) {
 		printf("Erreur. Pas assez d'espace.\n");
 		free(dico->dico);
 		return;
 	}
+}
+
+void creation_dico(dictionnaire* dico, size_t taille, const char* nom_dico) {
+	assert(dico_vide(dico) != 0);
+	FILE* f = fopen(nom_dico, "r");
+	if (f == NULL) {
+		printf("fichier non accessible\n");
+		return;
+	}
+
+	changer_taille_dico(dico, (int)taille);
+	dico_alloc(dico, taille);
 
 	char mot[30] = { 0 };
 	int n = 1;
@@ -76,30 +86,38 @@ void creation_dico(dictionnaire* dico, size_t taille, char* nom_dico) {
 }
 
 
-void affichage_dico(const dictionnaire* dico) {
-	for (int i = 0; i < 10; i++)
-		printf("%s\n", dico->dico[i]);
-}
 
 // Il faut que le dico est ordonnées dans l'ordre croissant (comme tout les dico)...
+
+void init_index(dictionnaire* dico) {
+	for (int i = 0; i < TAILLE_ALPHABET; i++) {
+		add_ind_prem_l(dico, i, PAS_TROUVER);
+		for (int j = 0; j < TAILLE_ALPHABET; j++) {
+			add_ind_deuxieme_l(dico, i, j, PAS_TROUVER);
+		}
+	}
+}
 
 void indexage_dico(dictionnaire* dico) {
 	assert(taille_dico(dico) > 0);
 
-	for (int i = 0, j = 0, d = 'A'; i < taille_dico(dico); i++) {
-		if (dico->dico[i][PREMIERE_LETTRE] == d) {
-			dico->index[j].ind_premiere = i;
+	init_index(dico);
+	for (int i = 0, j = 0, d = 'A'; i < taille_dico(dico); ++i) {
+		if (val_permiere_lettre(dico, i) == d) {
+			add_ind_prem_l(dico, j, i);
 			indexage_secondaire(dico, d, i);
 			j++;
 			d++;
 		}
-		if (dico->dico[i][PREMIERE_LETTRE] > d) {
-			char ecart = dico->dico[i][DEUXIEME_LETTRE];
+		if (val_permiere_lettre(dico, i) > d) {
+			char ecart = (char)val_permiere_lettre(dico, i);
 			for (j, d; d < ecart; j++, d++) {
-				dico->index[j].ind_premiere = PAS_TROUVER;
+				add_ind_prem_l(dico, j, PAS_TROUVER);
 			}
-			dico->index[j].ind_premiere = i;
+			add_ind_prem_l(dico, j, i);
 			indexage_secondaire(dico, d, i);
+			d++;
+			j++;
 		}
 
 	}
@@ -108,33 +126,54 @@ void indexage_dico(dictionnaire* dico) {
 
 
 void indexage_secondaire(dictionnaire* dico, char ref, int depart) {
+	int ind_lettre_tab = ref - 'A';
 
-	int ind_lettre_tab = ref - 'A'; // Indice de la case correspondant à la lettre de référence, utilisée pour indexer les mots commençant par cette lettre.
+	for (int i = depart, j = 0, d = 'A'; i < taille_dico(dico) && val_permiere_lettre(dico, i) == ref; ++i) {
 
-	for (int i = depart, j = 0, d = 'A'; i < taille_dico(dico) && dico->dico[i][PREMIERE_LETTRE] == ref; i++) {
-
-		if (dico->dico[i][DEUXIEME_LETTRE] == d) {
-			dico->index[ind_lettre_tab].ind_deuxieme[j] = i;
+		if (val_deuxieme_lettre(dico, i) == d) {
+			add_ind_deuxieme_l(dico, ind_lettre_tab, j, i);
 			j++;
 			d++;
 		}
-		if (dico->dico[i][DEUXIEME_LETTRE] > d) {
-			char dernier = dico->dico[i][DEUXIEME_LETTRE];
-			for (j, d; d < dernier; j++, d++) {
-				dico->index[ind_lettre_tab].ind_deuxieme[j] = PAS_TROUVER;
+		if (val_deuxieme_lettre(dico, i) > d) {
+			char dernier = val_deuxieme_lettre(dico, i);
+			for (; d < dernier; j++, d++) {
+				add_ind_deuxieme_l(dico, ind_lettre_tab, j, PAS_TROUVER);
 			}
-			dico->index[ind_lettre_tab].ind_deuxieme[j] = i;
+			add_ind_deuxieme_l(dico, ind_lettre_tab, j, i);
+			j++;
+			d++;
 		}
 
 	}
 }
 
-
-void affichage_index(const dictionnaire* dico) {
-	for (int i = 0; i < TAILLE_ALPHABET; i++)
-		printf("l'index pour '%c' : %d\n", 'A' + i, dico->index[i].ind_premiere);
+int val_permiere_lettre(dictionnaire* dico, int indice) {
+	return dico->dico[indice][PREMIERE_LETTRE];
 }
 
+int val_deuxieme_lettre(dictionnaire* dico, int indice) {
+	return dico->dico[indice][DEUXIEME_LETTRE];
+}
+
+
+
+int indice_premiere_lettre(dictionnaire* dico, int val_alphanum_l) {
+	assert(val_alphanum_l >= 0 && val_alphanum_l < TAILLE_ALPHABET);
+	return dico->index[val_alphanum_l].ind_premiere;
+}
+
+int indice_deuxieme_lettre(dictionnaire* dico, int val_num_l, int val_ref) {
+	return dico->index[val_ref].ind_deuxieme[val_num_l];
+}
+
+void add_ind_prem_l(dictionnaire* dico, int val_alphanum_l, int indice) {
+	dico->index[val_alphanum_l].ind_premiere = indice;
+}
+
+void add_ind_deuxieme_l(dictionnaire* dico, int val_alphanum_l1, int val_alphanum_l2, int indice) {
+	dico->index[val_alphanum_l1].ind_deuxieme[val_alphanum_l2] = indice;
+}
 
 int trouver_mot(const dictionnaire* dico, const char* mot) {
 
@@ -144,13 +183,16 @@ int trouver_mot(const dictionnaire* dico, const char* mot) {
 	int case_lettre_1 = mot[PREMIERE_LETTRE] - 'A';
 	int case_lettre_2 = mot[DEUXIEME_LETTRE] - 'A';
 	char mot_limite = mot[DEUXIEME_LETTRE] + 1;
+	if (indice_premiere_lettre(dico, case_lettre_1) == PAS_TROUVER) {
+		return PAS_TROUVER;
+	}
 	int depart = dico->index[case_lettre_1].ind_deuxieme[case_lettre_2];
 	if (depart == PAS_TROUVER) {
 		return PAS_TROUVER;
 	}
 
-	for (int i = depart; dico->dico[i][DEUXIEME_LETTRE]<mot_limite && i < dico->taille; i++) {
-		if (strcmp(dico->dico[i], mot) == 0) {
+	for (int i = depart; dico->dico[i][DEUXIEME_LETTRE] < mot_limite && i < dico->taille; i++) {
+		if (strcmp(addr_mot(dico, i), mot) == 0) {
 			return i;
 		}
 	}
@@ -170,4 +212,13 @@ int bonne_casse(const char* mot) {
 
 void rendre_mot_injouable(dictionnaire* dico, int indice) {
 	strcpy(dico->dico[indice], "\0");
+}
+
+void mod_taille_dico(dictionnaire* dico, int taille) {
+	dico->taille = taille;
+}
+
+
+char* addr_mot(const dictionnaire* dico, int indice) {
+	return dico->dico[indice];
 }

@@ -35,11 +35,11 @@ statut_partie demander_mot(dictionnaire* dico,pioche* p, jeu* j, jeu* j_autre, c
 
 		fgets(test, MOT_TEST_MAX, stdin); // faire une fct rentrer mot jeu et pour l'init rentrer mot init.
         if (test[1] != ' ' || test[0]==' ') {
-            printf("MARCHE PAS %c\n", test[1]);
+            //printf("MARCHE PAS %c\n", test[1]);
             continue;
         }
 		sscanf(test,"%c %s", &interprete, test);
-		printf("le Char : (%c) le Mot : (%s)\n", interprete, test);
+		//printf("le Char : (%c) le Mot : (%s)\n", interprete, test);
         if (strlen(test) > TAILLE_MOT_MAX - 1 || strlen(test)<TAILLE_LETTRE) 
             continue;
 
@@ -97,7 +97,7 @@ void jouer_mot(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, cha
     int taille_mot_parenth = strlen(lettre_parenthese);
     int taille_mot_remplace = strlen(lettre_hors_p);
 
-    save_rail(r, cote);
+    save_rail(r);
     save_jeu(j);
 
     if (mot[0] == '(') {
@@ -263,7 +263,7 @@ int tentative(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, char
 	if (init_mot(mot, &mot_sans_parenthese, &lettres_hors_parenthese, &lettre_parenthese, cote, j,r) == PAS_JOUABLE) {
 		return PAS_JOUABLE;
 	}
-    int indice_mot = trouver_mot(dico, &mot_sans_parenthese);
+    int indice_mot = 1; //trouver_mot(dico, &mot_sans_parenthese);
     if (indice_mot == PAS_TROUVER)
         return PAS_JOUABLE;
 
@@ -295,7 +295,7 @@ int tentative(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, char
     }
 
 
-    rendre_mot_injouable(dico, indice_mot); 
+    //rendre_mot_injouable(dico, indice_mot); 
     return JOUE;
 
 }
@@ -499,6 +499,7 @@ int lettre_rail_valide(rail* r, char* mot, char* lettres_hors_parenthese, char* 
 
 
 int echanger_chevalet(pioche* p, jeu* j, char che) {
+	assert(!pioche_vide(p));
 
     int i = indice_chevalet_paquet(j, che);
     if (i == PAS_JOUABLE)
@@ -507,9 +508,11 @@ int echanger_chevalet(pioche* p, jeu* j, char che) {
 
     int d = rand() % p->nb;
     char temp = j->jeu_actuel[i];
+
     j->jeu_actuel[i] = p->pioche[d];
     p->pioche[d] = temp;
 
+    return JOUABLE;
 }
 
 
