@@ -1,5 +1,35 @@
 #include "partie.h"
 
+void test_ini_dico() {
+	int taille = recherche_taille_dico("ods4.txt");
+	assert(taille >= RIEN);
+	dictionnaire dico;
+	init_dico(&dico);
+	creation_dico(&dico, (size_t)taille, "ods4.txt");
+	printf("%d ", taille_dico(&dico));
+	assert(taille_dico(&dico) == taille);
+	assert(addr_mot(&dico, taille_dico(&dico)-1)!=NULL);
+	suppr_dico(&dico);
+}
+
+
+void test_ind_dico() {
+	int taille = recherche_taille_dico("ods4.txt");
+	dictionnaire dico;
+	init_dico(&dico);
+	creation_dico(&dico, (size_t)taille, "ods4.txt");
+	init_index(&dico);
+	assert(indice_premiere_lettre(&dico, 0) == PAS_TROUVER);
+	indexage_dico(&dico);
+	assert(indice_premiere_lettre(&dico, 0) != PAS_TROUVER);
+
+	assert(strcmp(dico.dico[taille_dico(&dico) - 1], dico.dico[trouver_mot(&dico, dico.dico[taille_dico(&dico) - 1])]) == 0);
+	assert(val_permiere_lettre(&dico, taille_dico(&dico) - 1) == dico.dico[taille_dico(&dico) - 1][PREMIERE_LETTRE]);
+	assert(val_deuxieme_lettre(&dico, taille_dico(&dico) - 1) == dico.dico[taille_dico(&dico) - 1][DEUXIEME_LETTRE]);
+	printf("%s\n", dico.dico[taille_dico(&dico) - 1]);
+
+}
+
 main() {
 
 	srand(time(NULL));
@@ -9,10 +39,13 @@ main() {
 	rail r;
 	dictionnaire dico;
 
+	test_ini_dico();
+	test_ind_dico();
+
+
 	init_rail(&r);
 	init_pioche(&p);
 	remplissage_pioche(&p);
-
 	init_jeu(&j1);
 	remplir_paquet(&j1, &p);
 	init_jeu(&j2);
@@ -22,10 +55,6 @@ main() {
 	size_t taille = recherche_taille_dico("ods4.txt");
 	creation_dico(&dico, taille, "ods4.txt");
 	indexage_dico(&dico);
-
-	for (int i = 0; i < taille_dico(&dico); i++) {
-		printf("%s et leur indice %d\n", dico.dico[i], trouver_mot(&dico, dico.dico[i]));
-	}
 
 
 	/*printf("\nL'indice du mot est : %d, %s\n", trouver_mot(&dico, "NORD"), dico.dico[trouver_mot(&dico, "NORD")]);
@@ -43,7 +72,5 @@ main() {
 	jouer_partie(&dico, &p, &j1, &j2, &r, valeur);
 
 
-
 }
-
 

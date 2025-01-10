@@ -3,7 +3,7 @@
 
 typedef enum{TOUR_J1 = 1, TOUR_J1_OCTO = -1, TOUR_J2 = 2, TOUR_J2_OCTO = -2, FINI = 0} statut_partie;
 
-enum{ L_MAX_PARENTH= 7, L_MAX_H_PARENTH = 8, PAS_ASSEZ_ENTRE= 1, TAILLE_LETTRE = 1};
+enum{ L_MAX_PARENTH= 7, L_MAX_H_PARENTH = 8, PAS_ASSEZ_ENTRE= 1, TAILLE_LETTRE = 1, UN_MOT= 1, RANG_PREM_L = 0};
 
 
 
@@ -14,8 +14,6 @@ int jouer_partie(dictionnaire* dico, pioche* p, jeu* j1, jeu* j2, rail* r, statu
 
 
 statut_partie demander_mot(dictionnaire* dico, pioche* p, jeu* j, jeu* j_autre, char* mot, int nbj, rail* r, statut_partie joueur_actuel);
-
-
 
 
 void jouer_mot(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, char* lettre_parenthese, char* lettre_hors_p, char cote, statut_partie joueur_actuel);
@@ -92,3 +90,16 @@ int octo_chevalet(jeu* j, jeu* j_autre,rail *r, statut_partie joueur_actuel);
 int echanger_chevalet(pioche* p, jeu* j, char che);
 
 void affichage_tour(jeu* j1, jeu* j2, rail* r);
+
+
+void changer_t_dnr_mot_joue(rail* r, int n);
+
+int t_drn_mot_joue(rail* r);
+
+void mod_r_recto(rail* r, int indice, char che);
+
+void mod_r_verso(rail* r, int indice, char che);
+
+char selec_rail_recto(rail* r, int indice);
+
+char selec_rail_verso(rail* r, int indice);

@@ -33,13 +33,11 @@ statut_partie demander_mot(dictionnaire* dico,pioche* p, jeu* j, jeu* j_autre, c
     while (valide == PAS_JOUABLE) {
         printf("%d> ", nbj);
 
-		fgets(test, MOT_TEST_MAX, stdin); // faire une fct rentrer mot jeu et pour l'init rentrer mot init.
+		fgets(test, MOT_TEST_MAX, stdin);
         if (test[1] != ' ' || test[0]==' ') {
-            //printf("MARCHE PAS %c\n", test[1]);
             continue;
         }
 		sscanf(test,"%c %s", &interprete, test);
-		//printf("le Char : (%c) le Mot : (%s)\n", interprete, test);
         if (strlen(test) > TAILLE_MOT_MAX - 1 || strlen(test)<TAILLE_LETTRE) 
             continue;
 
@@ -55,7 +53,7 @@ statut_partie demander_mot(dictionnaire* dico,pioche* p, jeu* j, jeu* j_autre, c
                 valide = echanger_chevalet(p, j, mot[0]);
                 if (valide == PAS_JOUABLE)
                     continue;
-                r->t_drn_mot_joue = 1;
+                changer_t_dnr_mot_joue(r, UN_MOT);
                 if (joueur_actuel == TOUR_J2)
                     joueur_actuel = TOUR_J1;
                 else if (joueur_actuel == TOUR_J1)
@@ -86,8 +84,9 @@ statut_partie demander_mot(dictionnaire* dico,pioche* p, jeu* j, jeu* j_autre, c
     }
 }
 
-
-
+void changer_t_dnr_mot_joue(rail* r, int n) {
+    r->t_drn_mot_joue = n;
+}
 
 
 
@@ -144,36 +143,50 @@ char sortir_chevalet_droite(rail* r, char cote, int taille_mot) {
     char temp = 'n';
 
     if (cote == 'R') {
-        temp = r->recto[TAILLE_RAIL - 1];
-        for (int i = TAILLE_RAIL - 2; i >= 0; i--) {
-            r->recto[i + 1] = r->recto[i];
+        temp = selec_rail_recto(r, TAILLE_RAIL - 1);
+        for (int i = TAILLE_RAIL - 2; i >= RANG_PREM_L; i--) {
+            mod_r_recto(r, i + 1, selec_rail_recto(r, i));
         }
     }
     else if (cote == 'V') {
-        temp = r->verso[TAILLE_RAIL - 1];
-        for (int i = TAILLE_RAIL - 2; i >= 0; i--) {
-            r->verso[i + 1] = r->verso[i];
+        temp = selec_rail_verso(r, TAILLE_RAIL - 1);
+        for (int i = TAILLE_RAIL - 2; i >= RANG_PREM_L; i--) {
+            mod_r_verso(r, i + 1, selec_rail_verso(r, i));
         }
     }
 
     return temp;
-
 }
 
+void mod_r_recto(rail* r, int indice, char che) {
+    r->recto[indice] = che;
+}
+
+void mod_r_verso(rail* r, int indice, char che) {
+    r->verso[indice] = che;
+}
+
+char selec_rail_recto(rail* r, int indice) {
+    return r->recto[indice];
+}
+
+char selec_rail_verso(rail* r, int indice) {
+    return r->verso[indice];
+}
 
 char sortir_chevalet_gauche(rail* r, char cote, int taille_mot) {
     char temp = 'n';
 
     if (cote == 'R') {
-        temp = r->recto[0];
+        temp = selec_rail_recto(r, RANG_PREM_L);
         for (int i = 0; i < TAILLE_RAIL - 1; i++) {
-            r->recto[i] = r->recto[i + 1];
+            mod_r_recto(r, i, selec_rail_recto(r, i + 1));
         }
     }
     else if (cote == 'V') {
-        temp = r->verso[0];
+        temp = selec_rail_verso(r, RANG_PREM_L);
         for (int i = 0; i < TAILLE_RAIL - 1; i++) {
-            r->verso[i] = r->verso[i + 1];
+            mod_r_verso(r, i, selec_rail_verso(r, i + 1));
         }
     }
     return temp;
@@ -183,22 +196,22 @@ char sortir_chevalet_gauche(rail* r, char cote, int taille_mot) {
 
 void inserer_chevalet_droite(rail* r, char che, char cote) {
     if (cote == 'R') {
-        r->recto[TAILLE_RAIL - 2] = che;
+        mod_r_recto(r, TAILLE_RAIL - 2, che);
         copie_recto_verso(r);
     }
     if (cote == 'V') {
-        r->verso[TAILLE_RAIL - 2] = che;
+        mod_r_verso(r, TAILLE_RAIL - 2, che);
         copie_verso_recto(r);
     }
 }
 
 void inserer_chevalet_gauche(rail* r, char che, char cote) {
     if (cote == 'R') {
-        r->recto[0] = che;
+        mod_r_recto(r, PREMIERE_LETTRE, che);
         copie_recto_verso(r);
     }
     if (cote == 'V') {
-        r->verso[0] = che;
+        mod_r_verso(r, PREMIERE_LETTRE, che);
         copie_verso_recto(r);
     }
 }
@@ -235,7 +248,9 @@ int verif_format_mot(char* mot, int* indice_ouv, int* indice_ferm ) {
     return JOUABLE;
 }
 
-
+int t_drn_mot_joue(rail* r) {
+    return r->t_drn_mot_joue;
+}
 
 
 int tentative(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, char cote, statut_partie joueur_actuel) {
@@ -246,7 +261,7 @@ int tentative(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, char
     char mot_sans_parenthese[TAILLE_MOT_SANS_P], lettre_parenthese[L_MAX_PARENTH + 1], lettres_hors_parenthese[L_MAX_H_PARENTH + 1];
 
     if (cote == 'r' || cote == 'v') {
-		if (r->t_drn_mot_joue == TAILLE_RAIL - 1 || r->t_drn_mot_joue < TAILLE_MOT_MIN_SANS_P) {
+		if (t_drn_mot_joue(r) == TAILLE_RAIL - 1 || t_drn_mot_joue(r) < TAILLE_MOT_MIN_SANS_P) {
 			return PAS_JOUABLE;
 		}
         else {
@@ -256,22 +271,22 @@ int tentative(jeu* j, jeu* j_autre, rail* r, dictionnaire* dico, char* mot, char
                 i = octo_chevalet(j, j_autre, r, joueur_actuel);
             }
 
-            r->t_drn_mot_joue = PAS_JOUABLE;
+            changer_t_dnr_mot_joue(r, PAS_JOUABLE);
         }
     }
 
 	if (init_mot(mot, &mot_sans_parenthese, &lettres_hors_parenthese, &lettre_parenthese, cote, j,r) == PAS_JOUABLE) {
 		return PAS_JOUABLE;
 	}
-    int indice_mot = 1; //trouver_mot(dico, &mot_sans_parenthese);
+    int indice_mot = 1;//trouver_mot(dico, &mot_sans_parenthese);
     if (indice_mot == PAS_TROUVER)
         return PAS_JOUABLE;
 
     if (cote == 'R' || cote == 'V') {
         jouer_mot(j, j_autre, r, dico, mot, &lettre_parenthese, &lettres_hors_parenthese, cote, joueur_actuel);
-        r->t_drn_mot_joue = strlen(mot_sans_parenthese);
+        changer_t_dnr_mot_joue(r, strlen(mot_sans_parenthese));
 
-        if (j->nb[0] == 0) {
+        if (taille_jeu_actuel(j) == 0) {
             return FINI;
         }
 
@@ -506,11 +521,11 @@ int echanger_chevalet(pioche* p, jeu* j, char che) {
         return PAS_JOUABLE;
     save_jeu(j);
 
-    int d = rand() % p->nb;
-    char temp = j->jeu_actuel[i];
+    int d = rand() % taille_pioche(p);
+    char temp = selec_che_j_actuel(j, i);
 
-    j->jeu_actuel[i] = p->pioche[d];
-    p->pioche[d] = temp;
+    remp_che_j_actuel(j,i, selectionner_chevalet(p,d));
+    modif_che_pioche(p, d, temp);
 
     return JOUABLE;
 }
@@ -523,7 +538,7 @@ int octo_chevalet(jeu* j, jeu* j_autre, rail* r, statut_partie joueur_actuel) {
     scanf(" %c", &chevalet_jouer);
     getchar();
 
-    int i = indice_chevalet_paquet(j, chevalet_jouer);
+    int i = indice_chevalet_paquet(j, chevalet_jouer); 
 	if (i == PAS_JOUABLE)
 		return PAS_JOUABLE;
     recevoir_chevalet(j_autre, chevalet_jouer);

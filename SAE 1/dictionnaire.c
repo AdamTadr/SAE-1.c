@@ -86,6 +86,14 @@ void creation_dico(dictionnaire* dico, size_t taille, const char* nom_dico) {
 }
 
 
+void suppr_dico(dictionnaire* dico) {
+	for (int j = 0; j < taille_dico(dico); j++) {
+		free(dico->dico[j]);
+	}
+	free(dico->dico);
+	return;
+}
+
 
 // Il faut que le dico est ordonnées dans l'ordre croissant (comme tout les dico)...
 

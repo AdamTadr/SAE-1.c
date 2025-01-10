@@ -7,9 +7,10 @@
 enum { MAX_pioche = 88 };
 
 typedef enum {
-	NB_E = 14, NB_A = 9, NB_IS = 7,
+	UNE_L =1, NB_E = 14, NB_A = 9, NB_IS = 7,
 	NB_NTR = 6, NB_ULO = 5, NB_MD = 3, NB_CVP = 2
 }freq_lettres;
+
 
 /**
  * @brief pioche est une structure composé d'un tableau de caractères
@@ -21,11 +22,6 @@ typedef struct {
 	int nb;
 	char pioche[MAX_pioche];
 }pioche;
-
-typedef struct {
-	int nb;
-	pioche pioche[2];
-}pile_pioche;
 
 /**
  * @brief Vérifie si un pioche est vide
@@ -59,4 +55,14 @@ char distribuer_chevalet(pioche* p, int i);
  * @param i
  * @return
  */
+
 int indice_valide(const pioche* p, int i);
+
+
+void ajouter_element_pioche(pioche* p, char che);
+
+char selectionner_chevalet(const pioche* p, int n);
+
+int taille_pioche(const pioche* p);
+
+void mod_taille_pioche(pioche* p, int n);

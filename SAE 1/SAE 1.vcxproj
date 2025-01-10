@@ -133,6 +133,7 @@
     <ClCompile Include="partie.c" />
     <ClCompile Include="pioche.c" />
     <ClCompile Include="rail.c" />
+    <ClCompile Include="test_dico.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dictionnaire.h" />

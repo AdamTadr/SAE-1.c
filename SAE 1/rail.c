@@ -5,7 +5,7 @@ int depart_valide(dictionnaire* dico, const char* mot, jeu* j) {
 
     if (strlen(mot) != TAILLE_MOT_MIN-1)
         return PAS_JOUABLE;
-    int indice_mot = 1;//trouver_mot(dico, mot);
+    int indice_mot = trouver_mot(dico, mot);
     if (indice_mot == PAS_TROUVER) return PAS_JOUABLE;
     int validite = jouable(j, mot);
 	if (validite == PAS_JOUABLE) 

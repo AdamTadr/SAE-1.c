@@ -1,8 +1,8 @@
 #pragma once
 #include "pioche.h"
 
-enum { MAX_CHEVALETS = 16, CHEVALETS_INIT = 12, NB_TABLEAU = 2, PAS_JOUABLE = -1, JOUABLE = 1, JOUE = 1, TAILLE_MOT_MAX = 11,TAILLE_MOT_MIN = 5, TAILLE_MOT_SANS_P = 9, TAILLE_MOT_MIN_SANS_P = 3
-};
+enum { MAX_CHEVALETS = 16, CHEVALETS_INIT = 12, NB_TABLEAU = 2, PAS_JOUABLE = -1, JOUABLE = 1, JOUE = 1, TAILLE_MOT_MAX = 11,TAILLE_MOT_MIN = 5, TAILLE_MOT_SANS_P = 9, TAILLE_MOT_MIN_SANS_P = 3,
+JEU_ACTUEL = 0, JEU_PRECEDENT = 1, RIEN = 0 };
 
 
 typedef struct {
@@ -44,6 +44,28 @@ void save_jeu(jeu* j);
 int jouable(jeu* j, char* che);
 
 int precedent_jouable(jeu* j_autre, char* che);
+
+void modif_j_taille_jeu(jeu* j, int taille);
+
+void modif_j_taille_jeu_precedent(jeu* j, int taille);
+
+char selec_che_j_actuel(jeu* j, int indice);
+
+char selec_che_j_precendent(jeu* j, int indice);
+
+void remp_che_j_actuel(jeu* j, int indice, char che);
+
+void ajouter_che(jeu* j, char che);
+
+void ajouter_che_precedent(jeu* j,int ind, char che);
+
+int taille_bl(black_list* bl);
+
+int selec_ele_bl(black_list* bl, int indice);
+
+void ajouter_ele_bl(black_list* bl, int n);
+
+void decr_j_actuel(jeu* j);
 
 
 // Rajouter une fct ajouter carte prenant en paramètre le char retourner par le distrib_chevalet correspondant, elle est void,
