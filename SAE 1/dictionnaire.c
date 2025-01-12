@@ -3,11 +3,13 @@
 
 
 int taille_dico(const dictionnaire* dico) {
+	assert(dico != NULL);
 	return dico->taille;
 }
 
 
 size_t recherche_taille_dico(const char* nom_dico) {
+	assert(nom_dico != NULL);
 	FILE* f = fopen(nom_dico, "r");
 	if (f == NULL) {
 		printf("fichier non accessible\n");
@@ -30,18 +32,22 @@ size_t recherche_taille_dico(const char* nom_dico) {
 
 
 void init_dico(dictionnaire* dico) {
+	assert(dico != NULL);
 	mod_taille_dico(dico, VIDE);
 }
 
 int dico_vide(dictionnaire* dico) {
+	assert(dico != NULL);
 	return taille_dico(dico) == VIDE;
 }
 
 void changer_taille_dico(dictionnaire* dico, int valeur) {
+	assert(dico != NULL && valeur >= 0);
 	dico->taille = valeur;
 }
 
 void dico_alloc(dictionnaire* dico, size_t taille) {
+	assert(dico != NULL && taille >= 0);
 	dico->dico = (char**)malloc(sizeof(char*) * taille);
 	if (dico->dico == NULL) {
 		printf("Erreur. Pas assez d'espace.\n");
@@ -51,7 +57,7 @@ void dico_alloc(dictionnaire* dico, size_t taille) {
 }
 
 void creation_dico(dictionnaire* dico, size_t taille, const char* nom_dico) {
-	assert(dico_vide(dico) != 0);
+	assert(dico != NULL && nom_dico !=NULL && taille >= 0);
 	FILE* f = fopen(nom_dico, "r");
 	if (f == NULL) {
 		printf("fichier non accessible\n");
@@ -87,6 +93,7 @@ void creation_dico(dictionnaire* dico, size_t taille, const char* nom_dico) {
 
 
 void suppr_dico(dictionnaire* dico) {
+	assert(dico != NULL);
 	for (int j = 0; j < taille_dico(dico); j++) {
 		free(dico->dico[j]);
 	}
@@ -98,6 +105,7 @@ void suppr_dico(dictionnaire* dico) {
 // Il faut que le dico est ordonnées dans l'ordre croissant (comme tout les dico)...
 
 void init_index(dictionnaire* dico) {
+	assert(dico != NULL);
 	for (int i = 0; i < TAILLE_ALPHABET; i++) {
 		add_ind_prem_l(dico, i, PAS_TROUVER);
 		for (int j = 0; j < TAILLE_ALPHABET; j++) {
@@ -107,6 +115,7 @@ void init_index(dictionnaire* dico) {
 }
 
 void indexage_dico(dictionnaire* dico) {
+	assert(dico != NULL);
 	assert(taille_dico(dico) > 0);
 
 	init_index(dico);
@@ -134,6 +143,9 @@ void indexage_dico(dictionnaire* dico) {
 
 
 void indexage_secondaire(dictionnaire* dico, char ref, int depart) {
+	assert(dico != NULL && depart >= 0);
+	assert(ref >= 'A' && ref <= 'Z');
+
 	int ind_lettre_tab = ref - 'A';
 
 	for (int i = depart, j = 0, d = 'A'; i < taille_dico(dico) && val_permiere_lettre(dico, i) == ref; ++i) {
@@ -157,33 +169,47 @@ void indexage_secondaire(dictionnaire* dico, char ref, int depart) {
 }
 
 int val_permiere_lettre(dictionnaire* dico, int indice) {
+	assert(dico != NULL && indice >= 0);
 	return dico->dico[indice][PREMIERE_LETTRE];
 }
 
 int val_deuxieme_lettre(dictionnaire* dico, int indice) {
+	assert(dico != NULL && indice >= 0);
 	return dico->dico[indice][DEUXIEME_LETTRE];
 }
 
 
 
 int indice_premiere_lettre(dictionnaire* dico, int val_alphanum_l) {
+	assert(dico != NULL);
 	assert(val_alphanum_l >= 0 && val_alphanum_l < TAILLE_ALPHABET);
 	return dico->index[val_alphanum_l].ind_premiere;
 }
 
 int indice_deuxieme_lettre(dictionnaire* dico, int val_num_l, int val_ref) {
+	assert(dico != NULL);
+	assert(val_num_l >= 0 && val_num_l < TAILLE_ALPHABET);
+	assert(val_ref >= 0 && val_ref < TAILLE_ALPHABET);
 	return dico->index[val_ref].ind_deuxieme[val_num_l];
 }
 
 void add_ind_prem_l(dictionnaire* dico, int val_alphanum_l, int indice) {
+	assert(dico != NULL);
+	assert(val_alphanum_l >= 0 && val_alphanum_l < TAILLE_ALPHABET);
+
 	dico->index[val_alphanum_l].ind_premiere = indice;
 }
 
 void add_ind_deuxieme_l(dictionnaire* dico, int val_alphanum_l1, int val_alphanum_l2, int indice) {
+	assert(dico != NULL);
+	assert(val_alphanum_l1 >= 0 && val_alphanum_l1 < TAILLE_ALPHABET);
+	assert(val_alphanum_l2 >= 0 && val_alphanum_l2 < TAILLE_ALPHABET);
+
 	dico->index[val_alphanum_l1].ind_deuxieme[val_alphanum_l2] = indice;
 }
 
 int trouver_mot(const dictionnaire* dico, const char* mot) {
+	assert(dico != NULL && mot != NULL);
 
 	if (bonne_casse(mot) == PAS_TROUVER)
 		return PAS_TROUVER;
@@ -208,6 +234,7 @@ int trouver_mot(const dictionnaire* dico, const char* mot) {
 }
 
 int bonne_casse(const char* mot) {
+	assert(mot != NULL);
 
 	int taille_mot = strlen(mot);
 
@@ -219,14 +246,17 @@ int bonne_casse(const char* mot) {
 }
 
 void rendre_mot_injouable(dictionnaire* dico, int indice) {
+	assert(dico != NULL && indice >= 0 && indice < taille_dico(dico));
 	strcpy(dico->dico[indice], "\0");
 }
 
 void mod_taille_dico(dictionnaire* dico, int taille) {
+	assert(dico != NULL && taille >= 0);
 	dico->taille = taille;
 }
 
 
 char* addr_mot(const dictionnaire* dico, int indice) {
+	assert(dico != NULL && indice >= 0);
 	return dico->dico[indice];
 }

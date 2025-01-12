@@ -36,6 +36,18 @@
     <ClCompile Include="test_dico.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="test_pioche.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="test_partie.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="test_joueur.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="test_rail.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pioche.h">

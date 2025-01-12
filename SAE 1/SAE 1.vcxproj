@@ -134,6 +134,10 @@
     <ClCompile Include="pioche.c" />
     <ClCompile Include="rail.c" />
     <ClCompile Include="test_dico.c" />
+    <ClCompile Include="test_joueur.c" />
+    <ClCompile Include="test_partie.c" />
+    <ClCompile Include="test_pioche.c" />
+    <ClCompile Include="test_rail.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dictionnaire.h" />
